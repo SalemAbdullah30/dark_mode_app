@@ -1,10 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>ad-hoc</string>
-    <key>signingStyle</key>
-    <string>manual</string>
-</dict>
-</plist>
+#!/bin/bash
+set -e # Exit on the first error
+set -x # Print all executed commands to the log
+
+# Define paths
+APP_PATH="$CM_BUILD_DIR/ios/Release-iphoneos/Runner.app"
+EXPORT_OPTIONS_PATH="$CM_BUILD_DIR/ExportOptions.plist"
+OUTPUT_PATH="$CM_BUILD_DIR/build_output"
+
+# Make output directory if it doesn't exist
+mkdir -p $OUTPUT_PATH
+
+# Run xcodebuild to export the IPA
+xcodebuild -exportArchive \
+  -archivePath "$APP_PATH" \
+  -exportOptionsPlist "$EXPORT_OPTIONS_PATH" \
+  -exportPath "$OUTPUT_PATH"
+
+# Move IPA to artifacts for easy access
+cp "$OUTPUT_PATH"/*.ipa $CM_BUILD_DIR
